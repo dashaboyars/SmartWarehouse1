@@ -1,0 +1,25 @@
+{
+  "name": "smart-warehouse",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "description": "SmartWarehouse",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.0",
+    "cors": "^2.8.5",
+    "debug": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "morgan": "^1.7.0",
+    "pg": "^8.16.3",
+    "pug": "^2.0.0-beta6",
+    "serve-favicon": "^2.3.0"
+  },
+  "eslintConfig": {}
+}

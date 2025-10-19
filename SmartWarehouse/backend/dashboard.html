@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Умный склад - Дашборд</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav {
+            background: blue;
+            padding: 15px 40px;
+        }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                margin-right: 30px;
+                font-weight: 500;
+            }
+
+        /* НОВЫЙ КОНТЕЙНЕР ДЛЯ РАЗДЕЛЕНИЯ НА ДВЕ КОЛОНКИ */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* карта 2/3, статистика 1/3 */
+            gap: 20px;
+            padding: 30px 40px;
+            align-items: start;
+        }
+
+        /* СТИЛИ ДЛЯ КАРТЫ (ЛЕВАЯ КОЛОНКА) */
+        .map-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: 500px; /* увеличили высоту карты */
+        }
+
+        /* СТИЛИ ДЛЯ КАРТОЧЕК (ПРАВАЯ КОЛОНКА) */
+        .stats-sidebar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-number {
+            font-size: 18px; /* уменьшили размер */
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .stat-card h3 {
+            font-size: 11px; /* уменьшили заголовок */
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 9px; /* уменьшили текст */
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Дашборд управления</h1>
+        <div>
+            <span>👤 Администратор</span>
+            <a href="/" style="margin-left: 20px; color: #1890ff;">🚪 Выход</a>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="/dashboard">📊 Текущий мониторинг</a>
+        <a href="/history">📈 Исторические данные</a>
+        <a href="/import">📁 Загрузить CSV</a>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР С ДВУМЯ КОЛОНКАМИ -->
+    <div class="dashboard-main">
+        <!-- ЛЕВАЯ КОЛОНКА - КАРТА СКЛАДА -->
+        <div class="map-container">
+            <h3>🗺️ Карта склада</h3>
+            <p style="margin-top: 20px; text-align: center; color: #666;">
+                Здесь будет интерактивная карта склада с роботами<br>
+                Зоны: A, B, C, D | Ряды: 1-50
+            </p>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА - КАРТОЧКИ СТАТИСТИКИ -->
+        <div class="stats-sidebar">
+            <div class="stat-card">
+                <h3>🤖 Активные роботы</h3>
+                <div class="stat-number" style="color: #52c41a;">5/8</div>
+                <p>78% батареи в среднем</p>
+            </div>
+            <div class="stat-card">
+                <h3>📦 Проверено сегодня</h3>
+                <div class="stat-number" style="color: #1890ff;">124</div>
+                <p>позиций</p>
+            </div>
+            <div class="stat-card">
+                <h3>⚠️ Критические остатки</h3>
+                <div class="stat-number" style="color: #faad14;">3</div>
+                <p>требуют внимания</p>
+            </div>
+            <div class="stat-card">
+                <h3>🔋 Заряд батарей</h3>
+                <div class="stat-number" style="color: #13c2c2;">78%</div>
+                <p>средний уровень</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Здесь будет JavaScript для обновления данных в реальном времени
+        console.log('Дашборд загружен');
+    </script>
+</body>
+</html>
