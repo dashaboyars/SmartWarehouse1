@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Исторические данные - Умный склад</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav {
+            background: #1890ff;
+            padding: 15px 40px;
+        }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                margin-right: 30px;
+                font-weight: 500;
+            }
+
+        /* Фильтры */
+        .filters {
+            background: white;
+            padding: 20px 40px;
+            margin: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .filter-item label {
+                font-size: 12px;
+                font-weight: 500;
+                color: #666;
+            }
+
+            .filter-item input, .filter-item select {
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Таблица */
+        .table-container {
+            background: white;
+            margin: 0 40px 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+        }
+
+            th:hover {
+                background: #f0f0f0;
+            }
+
+        .status-ok {
+            color: #52c41a;
+            font-weight: 500;
+        }
+
+        .status-low {
+            color: #faad14;
+            font-weight: 500;
+        }
+
+        .status-critical {
+            color: #f5222d;
+            font-weight: 500;
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .page-btn.active {
+                background: #1890ff;
+                color: white;
+                border-color: #1890ff;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📈 Исторические данные</h1>
+        <div>
+            <span>👤 Администратор</span>
+            <a href="/" style="margin-left: 20px; color: #1890ff;">🚪 Выход</a>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="/dashboard">📊 Текущий мониторинг</a>
+        <a href="/history" style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">📈 Исторические данные</a>
+        <a href="/import">📁 Загрузить CSV</a>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters">
+        <div class="filter-group">
+            <div class="filter-item">
+                <label>Период с</label>
+                <input type="date" id="dateFrom">
+            </div>
+            <div class="filter-item">
+                <label>Период по</label>
+                <input type="date" id="dateTo">
+            </div>
+            <div class="filter-item">
+                <label>Зона склада</label>
+                <select id="zoneFilter">
+                    <option value="">Все зоны</option>
+                    <option value="A">Зона A</option>
+                    <option value="B">Зона B</option>
+                    <option value="C">Зона C</option>
+                    <option value="D">Зона D</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Статус</label>
+                <select id="statusFilter">
+                    <option value="">Все статусы</option>
+                    <option value="OK">OK</option>
+                    <option value="LOW_STOCK">Низкий остаток</option>
+                    <option value="CRITICAL">Критический</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-buttons">
+            <button class="btn btn-primary" onclick="applyFilters()">Применить фильтры</button>
+            <button class="btn btn-secondary" onclick="resetFilters()">Сбросить</button>
+        </div>
+    </div>
+
+    <!-- Таблица -->
+    <div class="table-container">
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable('scanned_at')">Дата и время 📅</th>
+                    <th onclick="sortTable('robot_id')">ID робота 🤖</th>
+                    <th onclick="sortTable('zone')">Зона склада 🗺️</th>
+                    <th onclick="sortTable('product_id')">Артикул товара</th>
+                    <th onclick="sortTable('product_name')">Название товара</th>
+                    <th onclick="sortTable('quantity')">Количество</th>
+                    <th onclick="sortTable('status')">Статус</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Данные будут загружаться через JavaScript -->
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        Загрузка данных...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Пагинация -->
+        <div class="pagination" id="pagination">
+            <!-- Пагинация будет генерироваться через JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let currentSort = 'scanned_at_desc';
+
+        // Загрузка данных при открытии страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistoryData();
+            setDefaultDates();
+        });
+
+        // Установка дат по умолчанию (последние 7 дней)
+        function setDefaultDates() {
+            const today = new Date();
+            const weekAgo = new Date();
+            weekAgo.setDate(today.getDate() - 7);
+
+            document.getElementById('dateFrom').value = weekAgo.toISOString().split('T')[0];
+            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
+        }
+
+        // Загрузка данных
+        async function loadHistoryData() {
+            try {
+                const filters = getFilters();
+                const response = await fetch(`/api/history?page=${currentPage}&limit=${itemsPerPage}&sort=${currentSort}&${filters}`);
+                const data = await response.json();
+
+                renderTable(data.items);
+                renderPagination(data.totalPages);
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; color: #f5222d;">Ошибка загрузки данных</td></tr>';
+            }
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            currentPage = 1;
+            loadHistoryData();
+        }
+
+        // Сброс фильтров
+        function resetFilters() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('zoneFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            setDefaultDates();
+            applyFilters();
+        }
+
+        // Получение параметров фильтров
+        function getFilters() {
+            const params = new URLSearchParams();
+            if (document.getElementById('dateFrom').value) {
+                params.append('dateFrom', document.getElementById('dateFrom').value);
+            }
+            if (document.getElementById('dateTo').value) {
+                params.append('dateTo', document.getElementById('dateTo').value);
+            }
+            if (document.getElementById('zoneFilter').value) {
+                params.append('zone', document.getElementById('zoneFilter').value);
+            }
+            if (document.getElementById('statusFilter').value) {
+                params.append('status', document.getElementById('statusFilter').value);
+            }
+            return params.toString();
+        }
+
+        // Сортировка таблицы
+        function sortTable(column) {
+            // Простая реализация сортировки
+            currentSort = currentSort === `${column}_asc` ? `${column}_desc` : `${column}_asc`;
+            loadHistoryData();
+        }
+
+        // Рендеринг таблицы
+        function renderTable(items) {
+            const tbody = document.getElementById('tableBody');
+
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Нет данных для отображения</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => `
+                <tr>
+                    <td>${new Date(item.scanned_at).toLocaleString('ru-RU')}</td>
+                    <td>${item.robot_id}</td>
+                    <td>${item.zone}${item.row_number ? `-${item.row_number}` : ''}${item.shelf_number ? `-${item.shelf_number}` : ''}</td>
+                    <td>${item.product_id}</td>
+                    <td>${item.product_name}</td>
+                    <td>${item.quantity}</td>
+                    <td class="status-${item.status.toLowerCase().replace('_', '-')}">${getStatusText(item.status)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Текст статуса
+        function getStatusText(status) {
+            const statusMap = {
+                'OK': '✅ OK',
+                'LOW_STOCK': '⚠️ Низкий остаток',
+                'CRITICAL': '❌ Критический'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Рендеринг пагинации
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            let html = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+
+        // Переход на страницу
+        function goToPage(page) {
+            currentPage = page;
+            loadHistoryData();
+        }
+    </script>
+</body>
+</html>

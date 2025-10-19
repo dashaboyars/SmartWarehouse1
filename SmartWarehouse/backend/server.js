@@ -148,6 +148,19 @@ const server = http.createServer((req, res) => {
         }
         )
     }
+    else if (req.url === '/history' || req.url === '/history.html' ) {
+        console.log('✅ Загружаем страницу истории');
+        const filePath = path.join(__dirname, 'history.html');
+
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                res.end('<h1>Страница в разработке</h1><a href="/dashboard">Назад</a>');
+            } else {
+                res.end(data);
+            }
+        });
+    }
+
     else {
         // Страница не найдена
         console.log('❌ Неизвестный URL:', req.url);
